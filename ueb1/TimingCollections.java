@@ -82,7 +82,9 @@ public class TimingCollections {
 		time[3][3] = timingGet(arrayList, 10000);
 		time[0][0] = timingFill(hashSet, 100);
 
-		String res = Helper.printTable(time, new String[] {"Fill", "Iterate", "Contains", "Get"}, new String[] {"Hashset", "Treeset", "Link-L", "Array-L"});
+		String[] header = new String[] {"Fill", "Iterate", "Contains", "Get"};
+		String[] properties = new String[] {"Hashset", "Treeset", "Link-L", "Array-L"};
+		String res = Helper.printTable(time, header, properties);
 		System.out.println(res);
 
 		// System.out.println("hashSet fill: " + timingFill(hashSet, 1000000));
