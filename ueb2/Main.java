@@ -3,7 +3,6 @@ package ueb2;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,23 +13,23 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
-import java.io.IOException;
 
 public class Main {
 
 	private static final String FILE_FORMAT_MSG = "The file format is not supported. The file should be a (gzipped) FASTA file but has the %s file format";  
 	
-	public static void download(String urlString, String filepath) throws URISyntaxException, IOException {
+	public static File download(String urlString, String filepath) throws URISyntaxException, IOException {
 		File file = new File(filepath);
-		if (file.exists()) return;
+		if (file.exists()) return file;
 		file.createNewFile();
 		URL url = new URI(urlString).toURL(); // java.net.URL to easily stream file
 		InputStream inpStream = url.openStream(); // java.io.InputStream to prepare writing file with FileOutputStram and transferTo method
 		FileOutputStream outStream = new FileOutputStream(file, false); // java.io.FileOutputStream to write stream to file
 		inpStream.transferTo(outStream);
 		outStream.close();
+		return file;
 	}
 
 	private static BufferedReader readFile(String fileString) throws IOException {
@@ -45,10 +44,10 @@ public class Main {
 		return buffered;
 	}
 
-	public static HashMap<String, String> saveFastA(String fastaFile) throws IOException {
-		if (!fastaFile.matches("\\.fasta(\\.gz|\\.gzip)?$")) {// regex to match .fasta, .fasta.gzip or .fasta.gzip
-			throw new IOException(String.format(FILE_FORMAT_MSG, fastaFile.split(fastaFile, 1)[1]));
-		}
+	public static HashMap<String, String> mapFastA(String fastaFile) throws IOException {
+		// if (!fastaFile.matches("\\.fa(\\.gz|\\.gzip)?$")) {// regex to match .fa, .fa.gz or .fa.gzip
+		// 	throw new IOException(String.format(FILE_FORMAT_MSG, fastaFile.split("\\.", 2)[1]));
+		// }
 		/* Why Hashmap: get/put/containsKey in O(1), no need for sorting */
 		HashMap<String,String> map = new HashMap<>();
 		String line;
@@ -68,7 +67,21 @@ public class Main {
 	}
 
 	public static void saveToFile(HashMap<String,String> map, String filePath) throws IOException {
-		FileWriter fout = new FileWriter(new File(filePath), true);
-		fout.append(filePath);
+		String ident, sequence;
+		FileWriter fw = new FileWriter(new File(filePath), true);
+		Iterator<String> iter = map.keySet().iterator();
+		while (iter.hasNext()) {
+			ident = iter.next();
+			sequence = map.get(ident);
+			fw.append(ident + "\t" + sequence.length());
+		}
+		fw.close();
+	}
+
+	public static void main(String[] args) throws URISyntaxException, IOException {
+		String url = "https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-57/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz";
+		File file = download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz");
+		HashMap<String,String> map = mapFastA(file.getAbsolutePath());
+		saveToFile(map, "Arabidopsis_thaliana");
 	}
 }
