@@ -57,6 +57,7 @@ public class Main {
 		while ((line = reader.readLine()) != null) {
 			if (line.startsWith(">")) {
 				ident = line.substring(1).split(" ")[0];
+				sequence = "";
 			} else {
 				sequence += line;
 				map.put(ident, sequence);
@@ -73,15 +74,19 @@ public class Main {
 		while (iter.hasNext()) {
 			ident = iter.next();
 			sequence = map.get(ident);
-			fw.append(ident + "\t" + sequence.length());
+			fw.append(ident + "\t" + sequence.length() + "\n");
 		}
 		fw.close();
 	}
 
 	public static void main(String[] args) throws URISyntaxException, IOException {
 		String url = "https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-57/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz";
+		System.out.println("Downloading...");
 		File file = download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz");
+		// File file = new File("./ueb2/test.fa");
+		System.out.println("Mapping Sequences...");
 		HashMap<String,String> map = mapFastA(file.getAbsolutePath());
-		saveToFile(map, "Arabidopsis_thaliana");
+		System.out.println("Saving...");
+		saveToFile(map, "Arabidopsis_thaliana.tsv");
 	}
 }
