@@ -28,9 +28,10 @@ public class Main {
 		file.createNewFile();
 		URL url = new URI(urlString).toURL(); // java.net.URL to easily stream file
 		InputStream inpStream = url.openStream(); // java.io.InputStream to prepare writing file with FileOutputStram and transferTo method
-		FileOutputStream outStream = new FileOutputStream(file, false); // java.io.FileOutputStream to write stream to file
+		FileOutputStream outStream = new FileOutputStream(file); // java.io.FileOutputStream to write stream to file
 		inpStream.transferTo(outStream);
 		outStream.close();
+		inpStream.close();
 	}
 
 	private static BufferedReader readFile(String fileString) throws IOException {
@@ -55,13 +56,15 @@ public class Main {
 		String sequence = "", ident = "";
 		/* readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
-		while ((line = reader.readLine()) != null) {
+		line = reader.readLine();
+		while (line != null) {
 			if (line.startsWith(">")) {
+				map.put(ident, sequence);
 				ident = line.substring(1).split(" ")[0];
 			} else {
 				sequence += line;
-				map.put(ident, sequence);
 			}
+			line = reader.readLine();
 		}
 		reader.close();
 		return map;
