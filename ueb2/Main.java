@@ -52,20 +52,25 @@ public class Main {
 		/* Why Hashmap: get/put/containsKey in O(1), no need for sorting */
 		HashMap<String,String> map = new HashMap<>();
 		String line;
+		int counter = 1;
 		String sequence = "", ident = "";
 		/* readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
 		line = reader.readLine();
 		while (line != null) {
 			if (line.startsWith(">")) {
-				map.put(ident, sequence);
+				if (!ident.isEmpty()) map.put(ident, sequence);
 				ident = line.substring(1).split(" ")[0];
+				System.out.println("\tSequence "+ident);
 				sequence = "";
 			} else {
 				sequence += line;
+				System.out.print("Read lines: " + counter + "\r");
 			}
 			line = reader.readLine();
+			counter++;
 		}
+		map.put(ident, sequence);
 		reader.close();
 		return map;
 	}
