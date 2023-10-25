@@ -18,7 +18,7 @@ import java.util.zip.GZIPInputStream;
 
 public class Main {
 
-	private static final String FILE_FORMAT_MSG = "The file format is not supported. The file should be a (gzipped) FASTA file but has the %s file format";  
+	// private static final String FILE_FORMAT_MSG = "The file format is not supported. The file should be a (gzipped) FASTA file but has the %s file format";  
 	
 	public static File download(String urlString, String filepath) throws URISyntaxException, IOException {
 		File file = new File(filepath);
@@ -35,6 +35,7 @@ public class Main {
 
 	private static BufferedReader readFile(String fileString) throws IOException {
 		/* 	
+			A2.1b:
 			looks for gzip file extension and if present stream it through an additional GZIPInputStream, 
 			returns eventually BufferedReader in both cases 
 		*/
@@ -49,11 +50,12 @@ public class Main {
 		// if (!fastaFile.matches("\\.fa(\\.gz|\\.gzip)?$")) {// regex to match .fa, .fa.gz or .fa.gzip
 		// 	throw new IOException(String.format(FILE_FORMAT_MSG, fastaFile.split("\\.", 2)[1]));
 		// }
-		/* Why Hashmap: get/put/containsKey in O(1), no need for sorting */
+
+		/* A2.1b: get/put/containsKey in O(1), no need for sorting */
 		HashMap<String,String> map = new HashMap<>();
 		String line;
 		String sequence = "", ident = "";
-		/* readFile method accepts (gzipped) fasta files  */
+		/* A2.1b: readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
 		line = reader.readLine();
 		while (line != null) {
