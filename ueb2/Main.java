@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
@@ -46,13 +47,13 @@ public class Main {
 		return buffered;
 	}
 
-	public static HashMap<String, String> mapFastA(String fastaFile) throws IOException {
+	public static LinkedHashMap<String, String> mapFastA(String fastaFile) throws IOException {
 		// if (!fastaFile.matches("\\.fa(\\.gz|\\.gzip)?$")) {// regex to match .fa, .fa.gz or .fa.gzip
 		// 	throw new IOException(String.format(FILE_FORMAT_MSG, fastaFile.split("\\.", 2)[1]));
 		// }
 
 		/* A2.1b: get/put/containsKey in O(1), no need for sorting */
-		HashMap<String,String> map = new HashMap<>();
+		LinkedHashMap<String,String> map = new LinkedHashMap<>();
 		String line;
 		int counter = 1;
 		String sequence = "", ident = "";
@@ -77,10 +78,11 @@ public class Main {
 		return map;
 	}
 
-	public static void saveToFile(HashMap<String,String> map, String filePath) throws IOException {
+	public static void saveToFile(LinkedHashMap<String,String> map, String filePath) throws IOException {
 		String ident, sequence;
 		FileWriter fw = new FileWriter(new File(filePath), true);
 		Iterator<String> iter = map.keySet().iterator();
+		fw.write("identifier\tsequence length\n");
 		while (iter.hasNext()) {
 			ident = iter.next();
 			sequence = map.get(ident);
@@ -95,7 +97,7 @@ public class Main {
 		File file = download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz");
 		// File file = new File("./ueb2/test.fa");
 		System.out.println("Mapping Sequences...");
-		HashMap<String,String> map = mapFastA(file.getAbsolutePath());
+		LinkedHashMap<String,String> map = mapFastA(file.getAbsolutePath());
 		System.out.println("Saving...");
 		saveToFile(map, "Arabidopsis_thaliana.tsv");
 	}
