@@ -57,9 +57,16 @@ public class Main {
 		return filtered;
 	}
 
-	private String wrap(int maxlength, String symbol) {
-		if (symbol == null) symbol = "\n";
-		return null;
+	private String wrap(String text, int maxlength) {
+		String out = "";
+		int start = 0, end;
+		for (; start < text.length()-maxlength; start += maxlength) {
+			end = start + maxlength;
+			// if (end > text.length()) end = text.length();
+			out += text.substring(start, end) + "\n";
+		}
+		out += text.substring(start) + "\n";
+		return out;
 	}
 
 	public void extractSequence(HashMap<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
@@ -74,7 +81,7 @@ public class Main {
 			int end = bedChrom.getChromEnd();
 			String subseq = map.get(id).substring(start, end);
 			fw.append(">" + id + "-" + bedChrom.getName() + "\n");
-			fw.append(subseq + "\n");
+			fw.append(wrap(subseq, 80) + "\n");
 			oldId = id;
 		}
 		fw.close();
