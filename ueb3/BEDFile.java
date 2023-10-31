@@ -1,6 +1,5 @@
 package ueb3;
 
-import java.beans.beancontext.BeanContext;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,11 +10,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
-public class Main {
+import ueb2.FastAFile;
 
-	public void readBED(String path) throws IOException, FileFormatException {
+public class BEDFile {
+
+	public static ArrayList<BEDChrom> readBED(String path) throws IOException, FileFormatException {
 		ArrayList<BEDChrom> rows = new ArrayList<>();
 		File file = new File(path);
 		if (!file.exists()) throw new FileNotFoundException();
@@ -34,11 +35,11 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-
 		br.close();
+		return rows;
 	}
 
-	public ArrayList<BEDChrom> sortBED(ArrayList<BEDChrom> rows) {
+	public static ArrayList<BEDChrom> sortBED(ArrayList<BEDChrom> rows) {
 		rows.sort(new Comparator<BEDChrom>() {
 			@Override
 			public int compare(BEDChrom o1, BEDChrom o2) {
@@ -48,7 +49,7 @@ public class Main {
 		return rows;
 	}
 
-	public ArrayList<BEDChrom> filterByName(ArrayList<BEDChrom> rows, String regex) {
+	public static ArrayList<BEDChrom> filterByName(ArrayList<BEDChrom> rows, String regex) {
 		ArrayList<BEDChrom> filtered = new ArrayList<>();
 		for (BEDChrom chrom : rows) {
 			if (chrom.getName().matches(regex))
@@ -57,7 +58,7 @@ public class Main {
 		return filtered;
 	}
 
-	private String wrap(String text, int maxlength) {
+	private static String wrap(String text, int maxlength) {
 		String out = "";
 		int start = 0, end;
 		for (; start < text.length()-maxlength; start += maxlength) {
@@ -69,8 +70,9 @@ public class Main {
 		return out;
 	}
 
-	public void extractSequence(HashMap<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
-		FileWriter fw = new FileWriter(new File(filePath));
+	public File extractSequence(HashMap<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
+		File file = new File(filePath);
+		FileWriter fw = new FileWriter(file);
 		ArrayList<BEDChrom> sortedRows = sortBED(rows);
 		String oldId = "";
 		for (BEDChrom bedChrom : sortedRows) {
@@ -85,5 +87,15 @@ public class Main {
 			oldId = id;
 		}
 		fw.close();
+		return file;
+	}
+
+	public static void main(String[] args) throws FileFormatException, IOException {
+		// a)
+		ArrayList<BEDChrom> arr = readBED("./Ath_promoters.bed");
+		ArrayList<BEDChrom> sortedArr = sortBED(arr);
+		ArrayList<BEDChrom> filteredArr = filterByName(sortedArr, "\\.1$");
+		// Map<String, String> U2_FastA.mapFastA("../ueb2/extracted.fa");
+
 	}
 }

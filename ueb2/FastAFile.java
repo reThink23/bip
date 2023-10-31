@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
-public class Main {
+public class FastAFile {
 
 	// private static final String FILE_FORMAT_MSG = "The file format is not supported. The file should be a (gzipped) FASTA file but has the %s file format";  
 	
