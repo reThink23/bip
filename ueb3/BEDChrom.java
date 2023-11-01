@@ -2,22 +2,23 @@ package ueb3;
 
 import java.util.Comparator;
 
-public class BEDChrom implements Comparator<BEDChrom> {
+public class BEDChrom implements Comparator<BEDChrom>, Comparable<BEDChrom> {
 
 	private String chrom;
 	private Integer chromStart;
 	private Integer chromEnd;
 	private String name;
-	private int score;
+	private Integer score;
 	private Strand strand;
 
 	public BEDChrom() {}
 
-	public BEDChrom(String chrom, Integer chromEnd, Integer chromStart, String name, int score, Strand strand) { 
+	public BEDChrom(String chrom, Integer chromEnd, Integer chromStart, String name, Integer score, Strand strand) { 
 		setAll(chrom, chromEnd, chromStart, name, score, strand);
 	}
-	public BEDChrom(String chrom, String chromEnd, String chromStart, String name, String score, String strand) { 
-		setAll(chrom, Integer.valueOf(chromStart), Integer.valueOf(chromEnd), name, Integer.valueOf(score), symbolToStrand(strand));
+	public BEDChrom(String chrom, String chromEnd, String chromStart, String name, String score, String strand) {
+		if (score.equals(".")) score = "0";
+		setAll(chrom, Integer.valueOf(chromStart), Integer.valueOf(chromEnd), name, score.equals(".") ? null : Integer.valueOf(score), symbolToStrand(strand));
 	}
 
 	
@@ -36,12 +37,13 @@ public class BEDChrom implements Comparator<BEDChrom> {
 		this.chromEnd = chromEnd;
 	}
 	
-	public void setScore(int score) {
+	public void setScore(Integer score) {
+		if (score == null) this.score = null;
 		if (score < 0 || score > 1000 ) throw new IllegalArgumentException(score+" is not a score. The score should be between 0 and 1000");
 		this.score = score;
 	}
 
-	public void setAll(String chrom, Integer chromEnd, Integer chromStart, String name, int score, Strand strand) {
+	public void setAll(String chrom, Integer chromEnd, Integer chromStart, String name, Integer score, Strand strand) {
 		setChrom(chrom);
 		setChromStart(chromStart);
 		setChromEnd(chromEnd);
@@ -63,7 +65,9 @@ public class BEDChrom implements Comparator<BEDChrom> {
 		private final String symbol;
 		
 		Strand(String symbol) { this.symbol = symbol; }
+		public static Strand toStrand(String symbol) { return symbolToStrand(symbol);}
 		public String getSymbol() { return symbol;}
+		public String toString() { return (this == NONE) ? "." : (this == POSITIVE) ? "+" : "-";}
 	}
 
 	public static Strand symbolToStrand(String symbol) {
@@ -80,18 +84,29 @@ public class BEDChrom implements Comparator<BEDChrom> {
 		}
 	}
 
-	// @Override
+	@Override
 	public int compare(BEDChrom obj1, BEDChrom obj2) {
-		if (obj1.chrom.compareTo(obj2.chrom) < 0 ) return 1;
-		if (obj1.chrom.compareTo(obj2.chrom) > 0 ) return -1;
+		return obj1.compareTo(obj2);
+	}
+
+	@Override
+	public int compareTo(BEDChrom o2) {
+		if (this.chrom.compareTo(o2.chrom) < 0 ) return -1;
+		if (this.chrom.compareTo(o2.chrom) > 0 ) return 1;
 		
-		if (obj1.chromStart < obj1.chromStart) return 1;
-		if (obj1.chromStart > obj1.chromStart) return -1;
+		if (this.chromStart < o2.chromStart) return -1;
+		if (this.chromStart > o2.chromStart) return 1;
 		
-		if (obj1.chromEnd < obj1.chromEnd) return 1;
-		if (obj1.chromEnd > obj1.chromEnd) return -1;
+		if (this.chromEnd < o2.chromEnd) return -1;
+		if (this.chromEnd > o2.chromEnd) return 1;
 
 		return 0;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s|%d|%d|%s|%d|%s", chrom, chromStart, chromEnd, name, score, String.valueOf(strand));
+	}
+
 
 }

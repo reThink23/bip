@@ -8,18 +8,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import ueb2.FastAFile;
 
+
+// import ueb2.FastaFile;
+
 public class BEDFile {
 
 	public static ArrayList<BEDChrom> readBED(String path) throws IOException, FileFormatException {
 		ArrayList<BEDChrom> rows = new ArrayList<>();
-		File file = new File(path);
-		if (!file.exists()) throw new FileNotFoundException();
+		// File file = new File(path);
+		// if (!file.exists()) throw new FileNotFoundException("File " + path + " not found.");
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 		
@@ -40,10 +44,10 @@ public class BEDFile {
 	}
 
 	public static ArrayList<BEDChrom> sortBED(ArrayList<BEDChrom> rows) {
-		rows.sort(new Comparator<BEDChrom>() {
+		Collections.sort(rows, new Comparator<BEDChrom>() {
 			@Override
 			public int compare(BEDChrom o1, BEDChrom o2) {
-				return o1.compare(o1, o2);
+				return o1.compareTo(o2);
 			}
 		});
 		return rows;
@@ -70,18 +74,19 @@ public class BEDFile {
 		return out;
 	}
 
-	public File extractSequence(HashMap<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
+	public static File extractSequence(Map<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
 		File file = new File(filePath);
 		FileWriter fw = new FileWriter(file);
 		ArrayList<BEDChrom> sortedRows = sortBED(rows);
 		String oldId = "";
 		for (BEDChrom bedChrom : sortedRows) {
-			String id = bedChrom.getChrom();
-			if (id.equals(oldId)) continue;
+			String id = bedChrom.getChrom() + "_" + bedChrom.getName();
+			if (id.equals(oldId)) {oldId = id; continue;}
 			
 			int start = bedChrom.getChromStart();
 			int end = bedChrom.getChromEnd();
-			String subseq = map.get(id).substring(start, end);
+			String elem = map.get(id);
+			String subseq = elem.substring(start, end);
 			fw.append(">" + id + "-" + bedChrom.getName() + "\n");
 			fw.append(wrap(subseq, 80) + "\n");
 			oldId = id;
@@ -91,11 +96,15 @@ public class BEDFile {
 	}
 
 	public static void main(String[] args) throws FileFormatException, IOException {
-		// a)
-		ArrayList<BEDChrom> arr = readBED("./Ath_promoters.bed");
+		ArrayList<BEDChrom> arr = readBED("C:\\Github\\BIP\\ueb3\\Ath_promoters.bed");
 		ArrayList<BEDChrom> sortedArr = sortBED(arr);
-		ArrayList<BEDChrom> filteredArr = filterByName(sortedArr, "\\.1$");
-		// Map<String, String> U2_FastA.mapFastA("../ueb2/extracted.fa");
+		ArrayList<BEDChrom> filteredArr = filterByName(sortedArr, ".*\\.1");
+		Map<String, String> map = FastAFile.mapFastA("C:\\Github\\BIP\\ueb2\\extracted.fa");
+		extractSequence(map, filteredArr, "C:\\Github\\BIP\\ueb3\\merged.fa");
+		
+		System.out.println(arr.get(23).toString());
+		System.out.println(sortedArr.get(23).toString());
+		System.out.println(filteredArr.get(5).toString());
 
 	}
 }

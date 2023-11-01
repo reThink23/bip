@@ -64,7 +64,7 @@ public class FastAFile {
 			if (line.startsWith(">")) {
 				if (!ident.isEmpty()) map.put(ident, sequence);
 				ident = line.substring(1).split(" ")[0];
-				System.out.println("\tSequence "+ident);
+				// System.out.println("\tSequence "+ident);
 				sequence = "";
 			} else {
 				sequence += line;
