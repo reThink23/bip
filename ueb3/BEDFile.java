@@ -3,14 +3,12 @@ package ueb3;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 import ueb2.FastAFile;
@@ -81,11 +79,11 @@ public class BEDFile {
 		String oldId = "";
 		for (BEDChrom bedChrom : sortedRows) {
 			String id = bedChrom.getChrom() + "_" + bedChrom.getName();
-			if (id.equals(oldId)) {oldId = id; continue;}
+			if (id.equals(oldId)) continue;
 			
 			int start = bedChrom.getChromStart();
 			int end = bedChrom.getChromEnd();
-			String elem = map.get(id);
+			String elem = map.get(bedChrom.getChrom());
 			String subseq = elem.substring(start, end);
 			fw.append(">" + id + "-" + bedChrom.getName() + "\n");
 			fw.append(wrap(subseq, 80) + "\n");
@@ -96,11 +94,15 @@ public class BEDFile {
 	}
 
 	public static void main(String[] args) throws FileFormatException, IOException {
-		ArrayList<BEDChrom> arr = readBED("C:\\Github\\BIP\\ueb3\\Ath_promoters.bed");
+		File bedFile = new File("ueb3/Ath_promoters.bed");
+		File fastaFile = new File("ueb2/test.fa");
+		File mergedFile = new File("ueb3/merged.fa");
+
+		ArrayList<BEDChrom> arr = readBED(bedFile.getAbsolutePath());
 		ArrayList<BEDChrom> sortedArr = sortBED(arr);
 		ArrayList<BEDChrom> filteredArr = filterByName(sortedArr, ".*\\.1");
-		Map<String, String> map = FastAFile.mapFastA("C:\\Github\\BIP\\ueb2\\extracted.fa");
-		extractSequence(map, filteredArr, "C:\\Github\\BIP\\ueb3\\merged.fa");
+		Map<String, String> map = FastAFile.mapFastA(fastaFile.getAbsolutePath());
+		extractSequence(map, filteredArr, mergedFile.getAbsolutePath());
 		
 		System.out.println(arr.get(23).toString());
 		System.out.println(sortedArr.get(23).toString());

@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
