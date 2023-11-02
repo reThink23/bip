@@ -67,8 +67,8 @@ public class FastAFile {
 				sequence = "";
 			} else {
 				sequence += line;
-				System.out.print("Read lines: " + counter + "\r");
 			}
+			// System.out.print("Read lines: " + counter + "\r");
 			line = reader.readLine();
 			counter++;
 		}

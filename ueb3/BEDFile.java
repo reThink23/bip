@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -85,7 +86,7 @@ public class BEDFile {
 			int end = bedChrom.getChromEnd();
 			String elem = map.get(bedChrom.getChrom());
 			String subseq = elem.substring(start, end);
-			fw.append(">" + id + "-" + bedChrom.getName() + "\n");
+			fw.append(">" + id + "\n");
 			fw.append(wrap(subseq, 80) + "\n");
 			oldId = id;
 		}
@@ -93,9 +94,11 @@ public class BEDFile {
 		return file;
 	}
 
-	public static void main(String[] args) throws FileFormatException, IOException {
+	public static void main(String[] args) throws FileFormatException, IOException, URISyntaxException {
+		String url = "https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-57/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz";
+
 		File bedFile = new File("ueb3/Ath_promoters.bed");
-		File fastaFile = new File("ueb2/test.fa");
+		File fastaFile = FastAFile.download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz"); // new File("ueb2/test.fa");
 		File mergedFile = new File("ueb3/merged.fa");
 
 		ArrayList<BEDChrom> arr = readBED(bedFile.getAbsolutePath());
