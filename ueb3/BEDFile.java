@@ -11,15 +11,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import ueb2.FastAFile;
+import ueb3.BEDChrom.Strand;
 
 
 // import ueb2.FastaFile;
 
 public class BEDFile {
 
-	public static ArrayList<BEDChrom> readBED(String path) throws IOException, FileFormatException {
+	public static ArrayList<BEDChrom> parseBED(String path) throws IOException, FileFormatException {
 		ArrayList<BEDChrom> rows = new ArrayList<>();
 		// File file = new File(path);
 		// if (!file.exists()) throw new FileNotFoundException("File " + path + " not found.");
@@ -73,19 +75,48 @@ public class BEDFile {
 		return out;
 	}
 
+	private static String reverseSeq(String seq) {
+		String out = "";
+		for (int i = seq.length()-1; i >= 0; i--) {
+			out += switch (seq.charAt(i)) {
+				case 'A' -> 'T';
+				case 'T' -> 'A';
+				case 'C' -> 'G';
+				case 'G' -> 'C';
+				default -> seq.charAt(i);
+			};
+		}
+		return out;
+	}
+
+	private static String getSubSequence(BEDChrom chrom, String sequence) {
+		return (chrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(chrom.chromStart(), chrom.chromEnd());
+	}
+
 	public static File extractSequence(Map<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
 		File file = new File(filePath);
 		FileWriter fw = new FileWriter(file);
 		ArrayList<BEDChrom> sortedRows = sortBED(rows);
+		Stream<BEDChrom> stream = sortedRows.stream();
+		stream
+			.filter(chrom -> map.get(chrom.chrom()) != null)
+			.forEach(chrom -> {
+				try {
+					fw.append(">" + chrom.chrom() + "_" + chrom.name() + "\n");
+					fw.append(wrap(chrom.createSubSeq(map.get(chrom.chrom())), 80) + "\n");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 		String oldId = "";
 		for (BEDChrom bedChrom : sortedRows) {
 			String id = bedChrom.chrom() + "_" + bedChrom.name();
-			if (id.equals(oldId)) continue;
+			if (oldId.equals(id)) continue;
 			
 			int start = bedChrom.chromStart();
 			int end = bedChrom.chromEnd();
-			String elem = map.get(bedChrom.chrom());
-			String subseq = elem.substring(start, end);
+			String sequence = map.get(bedChrom.chrom());
+			String subseq = (bedChrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(start, end);
 			fw.append(">" + id + "\n");
 			fw.append(wrap(subseq, 80) + "\n");
 			oldId = id;
@@ -101,10 +132,10 @@ public class BEDFile {
 		File fastaFile = FastAFile.download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz"); // new File("ueb2/test.fa");
 		File mergedFile = new File("ueb3/merged.fa");
 
-		ArrayList<BEDChrom> arr = readBED(bedFile.getAbsolutePath());
+		ArrayList<BEDChrom> arr = parseBED(bedFile.getAbsolutePath());
 		ArrayList<BEDChrom> sortedArr = sortBED(arr);
 		ArrayList<BEDChrom> filteredArr = filterByName(sortedArr, ".*\\.1");
-		Map<String, String> map = FastAFile.mapFastA(fastaFile.getAbsolutePath());
+		Map<String, String> map = FastAFile.parseFastA(fastaFile.getAbsolutePath());
 		extractSequence(map, filteredArr, mergedFile.getAbsolutePath());
 		
 		System.out.println(arr.get(23).toString());

@@ -13,16 +13,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
+
 
 public class FastAFile {
 
@@ -54,40 +49,49 @@ public class FastAFile {
 		return buffered;
 	}
 
-	public static LinkedHashMap<String, String> mapFastA(String fastaFile) throws IOException {
+	public static Map<String, String> parseFastA(String fastaFile) throws IOException {
 		// if (!fastaFile.matches("\\.fa(\\.gz|\\.gzip)?$")) {// regex to match .fa, .fa.gz or .fa.gzip
 		// 	throw new IOException(String.format(FILE_FORMAT_MSG, fastaFile.split("\\.", 2)[1]));
 		// }
 
 		/* A2.1b: get/put/containsKey in O(1), no need for sorting */
-		LinkedHashMap<String,String> map = new LinkedHashMap<>();
-		String line;
+		Map<String,String> map = new LinkedHashMap<>();
+		// String line;
 		String sequence = "", ident = "";
 		/* A2.1b: readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
 		Stream<String> lines = reader.lines();
-		List identifiers = lines.filter(e -> e.startsWith(">")).map(e -> e.substring(1, e.indexOf(" "))).collect(Collectors.toList());
-		List sequences = reader.lines().filter(e -> !e.startsWith(">"));
-		line = reader.readLine();
-		while (line != null) {
-			if (line.startsWith(">")) {
-				if (!ident.isEmpty()) map.put(ident, sequence);
-				ident = line.substring(1).split(" ")[0];
-				// System.out.println("\tSequence "+ident);
-				sequence = "";
-			} else {
-				sequence += line;
-			}
-			// System.out.print("Read lines: " + counter + "\r");
-			line = reader.readLine();
-			// counter++;
-		}
-		map.put(ident, sequence);
+		String[] keyval = {"", ""};
+		// List identifiers = lines.filter(e -> e.startsWith(">")).map(e -> e.substring(1, e.indexOf(" "))).collect(Collectors.toList());
+		// ArrayList<String> sequences = new ArrayList<String>();
+		lines.forEach(line -> {
+			if (!line.startsWith(">")) keyval[1] += line;
+			else {
+				keyval[0] = line.substring(1, line.indexOf(" ")); 
+				if (!keyval[0].isEmpty()) map.put(keyval[0], keyval[1]); 
+				keyval[1] = "";
+			} 
+		});
+		// line = reader.readLine();
+		// while (line != null) {
+		// 	if (line.startsWith(">")) {
+		// 		if (!ident.isEmpty()) map.put(ident, sequence);
+		// 		ident = line.substring(1).split(" ")[0];
+		// 		// System.out.println("\tSequence "+ident);
+		// 		sequence = "";
+		// 	} else {
+		// 		sequence += line;
+		// 	}
+		// 	// System.out.print("Read lines: " + counter + "\r");
+		// 	line = reader.readLine();
+		// 	// counter++;
+		// }
+		map.put(keyval[0], keyval[1]);
 		reader.close();
 		return map;
 	}
 
-	public static void saveToFile(LinkedHashMap<String,String> map, String filePath) throws IOException {
+	public static void saveToFile(Map<String,String> map, String filePath) throws IOException {
 		String ident, sequence;
 		FileWriter fw = new FileWriter(new File(filePath), true);
 		Iterator<String> iter = map.keySet().iterator();
@@ -106,7 +110,7 @@ public class FastAFile {
 		File file = download(url, "Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz");
 		// File file = new File("./ueb2/test.fa");
 		System.out.println("Mapping Sequences...");
-		LinkedHashMap<String,String> map = mapFastA(file.getAbsolutePath());
+		Map<String,String> map = parseFastA(file.getAbsolutePath());
 		System.out.println("Saving...");
 		saveToFile(map, "Arabidopsis_thaliana.tsv");
 	}
