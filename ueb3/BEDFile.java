@@ -55,7 +55,7 @@ public class BEDFile {
 	public static ArrayList<BEDChrom> filterByName(ArrayList<BEDChrom> rows, String regex) {
 		ArrayList<BEDChrom> filtered = new ArrayList<>();
 		for (BEDChrom chrom : rows) {
-			if (chrom.getName().matches(regex))
+			if (chrom.name().matches(regex))
 				filtered.add(chrom);
 		}
 		return filtered;
@@ -79,12 +79,12 @@ public class BEDFile {
 		ArrayList<BEDChrom> sortedRows = sortBED(rows);
 		String oldId = "";
 		for (BEDChrom bedChrom : sortedRows) {
-			String id = bedChrom.getChrom() + "_" + bedChrom.getName();
+			String id = bedChrom.chrom() + "_" + bedChrom.name();
 			if (id.equals(oldId)) continue;
 			
-			int start = bedChrom.getChromStart();
-			int end = bedChrom.getChromEnd();
-			String elem = map.get(bedChrom.getChrom());
+			int start = bedChrom.chromStart();
+			int end = bedChrom.chromEnd();
+			String elem = map.get(bedChrom.chrom());
 			String subseq = elem.substring(start, end);
 			fw.append(">" + id + "\n");
 			fw.append(wrap(subseq, 80) + "\n");

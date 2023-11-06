@@ -13,6 +13,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
@@ -54,10 +62,12 @@ public class FastAFile {
 		/* A2.1b: get/put/containsKey in O(1), no need for sorting */
 		LinkedHashMap<String,String> map = new LinkedHashMap<>();
 		String line;
-		int counter = 1;
 		String sequence = "", ident = "";
 		/* A2.1b: readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
+		Stream<String> lines = reader.lines();
+		List identifiers = lines.filter(e -> e.startsWith(">")).map(e -> e.substring(1, e.indexOf(" "))).collect(Collectors.toList());
+		List sequences = reader.lines().filter(e -> !e.startsWith(">"));
 		line = reader.readLine();
 		while (line != null) {
 			if (line.startsWith(">")) {
@@ -70,7 +80,7 @@ public class FastAFile {
 			}
 			// System.out.print("Read lines: " + counter + "\r");
 			line = reader.readLine();
-			counter++;
+			// counter++;
 		}
 		map.put(ident, sequence);
 		reader.close();
