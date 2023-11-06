@@ -108,19 +108,19 @@ public class BEDFile {
 					e.printStackTrace();
 				}
 			});
-		String oldId = "";
-		for (BEDChrom bedChrom : sortedRows) {
-			String id = bedChrom.chrom() + "_" + bedChrom.name();
-			if (oldId.equals(id)) continue;
+		// String oldId = "";
+		// for (BEDChrom bedChrom : sortedRows) {
+		// 	String id = bedChrom.chrom() + "_" + bedChrom.name();
+		// 	if (oldId.equals(id)) continue;
 			
-			int start = bedChrom.chromStart();
-			int end = bedChrom.chromEnd();
-			String sequence = map.get(bedChrom.chrom());
-			String subseq = (bedChrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(start, end);
-			fw.append(">" + id + "\n");
-			fw.append(wrap(subseq, 80) + "\n");
-			oldId = id;
-		}
+		// 	int start = bedChrom.chromStart();
+		// 	int end = bedChrom.chromEnd();
+		// 	String sequence = map.get(bedChrom.chrom());
+		// 	String subseq = (bedChrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(start, end);
+		// 	fw.append(">" + id + "\n");
+		// 	fw.append(wrap(subseq, 80) + "\n");
+		// 	oldId = id;
+		// }
 		fw.close();
 		return file;
 	}
