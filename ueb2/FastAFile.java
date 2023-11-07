@@ -56,15 +56,11 @@ public class FastAFile {
 
 		/* A2.1b: get/put/containsKey in O(1), no need for sorting */
 		Map<String,String> map = new LinkedHashMap<>();
-		// String line;
-		String sequence = "", ident = "";
 		/* A2.1b: readFile method accepts (gzipped) fasta files  */
 		BufferedReader reader = readFile(fastaFile);
-		Stream<String> lines = reader.lines();
+		
 		String[] keyval = {"", ""};
-		// List identifiers = lines.filter(e -> e.startsWith(">")).map(e -> e.substring(1, e.indexOf(" "))).collect(Collectors.toList());
-		// ArrayList<String> sequences = new ArrayList<String>();
-		lines.forEach(line -> {
+		reader.lines().forEach(line -> {
 			if (!line.startsWith(">")) keyval[1] += line;
 			else {
 				keyval[0] = line.substring(1, line.indexOf(" ")); 
@@ -72,6 +68,9 @@ public class FastAFile {
 				keyval[1] = "";
 			} 
 		});
+		/* much shorter, clearer  */
+		// String sequence = "", ident = "";
+		// String line;
 		// line = reader.readLine();
 		// while (line != null) {
 		// 	if (line.startsWith(">")) {

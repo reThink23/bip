@@ -108,6 +108,7 @@ public class BEDFile {
 					e.printStackTrace();
 				}
 			});
+		/* more concise, clear */
 		// String oldId = "";
 		// for (BEDChrom bedChrom : sortedRows) {
 		// 	String id = bedChrom.chrom() + "_" + bedChrom.name();

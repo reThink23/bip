@@ -31,6 +31,17 @@ public record BEDChrom (String chrom, Integer chromStart, Integer chromEnd, Stri
 	}
 
 	private static Strand symbolToStrand(String symbol) {
+		// switch (symbol) {
+		// 	case "+":
+		// 		return Strand.POSITIVE;
+		// 	case "-":
+		// 		return Strand.NEGATIVE;
+		// 	case ".":
+		// 		return Strand.NONE;
+		// 	default:
+		// 		throw new IllegalArgumentException(symbol+" is not a valid DNA strand orientation symbol. Valid Symbols are: +, -, . (if no strand)");
+		// }
+		/* much shorter, no indents neccessary to see return value */
 		return switch (symbol) {
 			case "+" -> Strand.POSITIVE;
 			case "-" -> Strand.NEGATIVE;
