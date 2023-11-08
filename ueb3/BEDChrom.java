@@ -1,6 +1,6 @@
 package ueb3;
 
-import ueb3.BEDChrom.Strand;
+// import ueb3.BEDChrom.Strand;
 
 public record BEDChrom (String chrom, Integer chromStart, Integer chromEnd, String name, Integer score, Strand strand) implements Comparable<BEDChrom> {
 

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import ueb2.FastAFile;
-import ueb3.BEDChrom.Strand;
+// import ueb3.BEDChrom.Strand;
 
 
 // import ueb2.FastaFile;
@@ -75,23 +75,23 @@ public class BEDFile {
 		return out;
 	}
 
-	private static String reverseSeq(String seq) {
-		String out = "";
-		for (int i = seq.length()-1; i >= 0; i--) {
-			out += switch (seq.charAt(i)) {
-				case 'A' -> 'T';
-				case 'T' -> 'A';
-				case 'C' -> 'G';
-				case 'G' -> 'C';
-				default -> seq.charAt(i);
-			};
-		}
-		return out;
-	}
+	// private static String reverseSeq(String seq) {
+	// 	String out = "";
+	// 	for (int i = seq.length()-1; i >= 0; i--) {
+	// 		out += switch (seq.charAt(i)) {
+	// 			case 'A' -> 'T';
+	// 			case 'T' -> 'A';
+	// 			case 'C' -> 'G';
+	// 			case 'G' -> 'C';
+	// 			default -> seq.charAt(i);
+	// 		};
+	// 	}
+	// 	return out;
+	// }
 
-	private static String getSubSequence(BEDChrom chrom, String sequence) {
-		return (chrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(chrom.chromStart(), chrom.chromEnd());
-	}
+	// private static String getSubSequence(BEDChrom chrom, String sequence) {
+	// 	return (chrom.strand() == Strand.NEGATIVE ? reverseSeq(sequence) : sequence).substring(chrom.chromStart(), chrom.chromEnd());
+	// }
 
 	public static File extractSequence(Map<String, String> map, ArrayList<BEDChrom> rows, String filePath) throws IOException {
 		File file = new File(filePath);
