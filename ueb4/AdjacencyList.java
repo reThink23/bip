@@ -17,7 +17,22 @@ public class AdjacencyList implements Representation {
 	}
 
 	public Graph computeMST(Graph graph) {
-		return null;
+		List<Node> nodes = new LinkedList<Node>(graph.nodes);
+		List<Edge> edgesInMST = new LinkedList<Edge>();
+		List<Node> nodesInMST = new LinkedList<Node>();
+
+		Node start = nodes.get(0);
+		nodesInMST.add(start);
+		nodes.remove(start);
+
+		while (!nodes.isEmpty()) {
+			Edge minEdge = minWeightedEdge(nodes, nodesInMST, graph.edges);
+			Node to = minEdge.to();
+			nodesInMST.add(to);
+			nodes.remove(to);
+			edgesInMST.add(minEdge);
+		}
+		return new Graph(nodesInMST, edgesInMST);
 	}
 
 	public String toString() {
