@@ -1,8 +1,13 @@
 package ueb4;
 
 import java.util.List;
+// import java.util.UUID;
 
 public record Node (Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String name) {
+	// Node() {
+	// 	this(UUID.randomUUID().toString(), null, null, null)
+	// }
+
 	Node(Integer id) {
 		this(id, null, null, null);
 	}
@@ -16,6 +21,9 @@ public record Node (Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String 
 
 	public boolean hasEdges() { return hasIncomingEdges() || hasOutgoingEdges(); }
 
+	public boolean equalsId(Integer id) {
+		return this.id == id;
+	}
 
 	public boolean equals(Node node) {
 		// check if both are null or not null

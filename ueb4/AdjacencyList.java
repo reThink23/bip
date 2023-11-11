@@ -1,5 +1,8 @@
 package ueb4;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -7,26 +10,29 @@ import java.util.stream.Collectors;
 
 public class AdjacencyList implements Representation {
 	/* for using identifier linkedHashMap */
-	Map<Integer, List<Edge>> adjList;
+	Map<Node, List<Edge>> adjList;
 
 	AdjacencyList(Graph graph) {
 		// graph.nodes.stream().collect(Collectors.toMap(Node::id, node -> graph.edges.contains(node) ? node : null));
-		Map<Integer, List<Edge>> edgesByFromNodeId = graph.edges.stream().collect(Collectors.groupingBy(edge -> edge.from().id()));
+		Map<Node, List<Edge>> edgesByFromNodeId = graph.edges.stream().collect(Collectors.groupingBy(edge -> edge.from()));
 		// System.out.println(edgesByFromNodeId.get(0));
 		adjList = edgesByFromNodeId;
 	}
 
-	public Graph computeMST(Graph graph) {
-		List<Node> nodes = new LinkedList<Node>(graph.nodes);
+	public Graph computeMST() {
+		Map<Node, List<Edge>> nodes = new HashMap<Node,List<Edge>>(adjList);
 		List<Edge> edgesInMST = new LinkedList<Edge>();
 		List<Node> nodesInMST = new LinkedList<Node>();
 
-		Node start = nodes.get(0);
+		Iterator<Node> iter = adjList.keySet().iterator();
+
+		if (!iter.hasNext()) return new Graph(new ArrayList<>(), new ArrayList<>());
+		Node start = iter.next();
 		nodesInMST.add(start);
 		nodes.remove(start);
 
-		while (!nodes.isEmpty()) {
-			Edge minEdge = minWeightedEdge(nodes, nodesInMST, graph.edges);
+		while (iter.hasNext()) {
+			Edge minEdge = minWeightedEdge(new ArrayList<Node>(nodes.keySet()), nodesInMST, adjList.get(iter.next()));
 			Node to = minEdge.to();
 			nodesInMST.add(to);
 			nodes.remove(to);
