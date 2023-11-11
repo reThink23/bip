@@ -47,15 +47,15 @@ public class AdjacencyList implements Representation {
 
 	public static void main(String[] args) {
 		List<Node> nodes = new LinkedList<>();
-		for (int i = 0; i < 8; i+=2) {
+		for (int i = 0; i <= 8; i++) {
 			nodes.add(new Node(i));
 		}
 		List<Edge> edges = new LinkedList<>();
-		for (int i = 1; i < 4; i++) {
+		for (int i = 1; i <= 8; i++) {
 			edges.add(new Edge(nodes.get(i-1), nodes.get(i), 1));
 		}
-		edges.add(new Edge(nodes.get(0), nodes.get(3)));
-		edges.add(new Edge(nodes.get(0), nodes.get(2)));
+		edges.add(new Edge(nodes.get(0), nodes.get(3), 1));
+		edges.add(new Edge(nodes.get(0), nodes.get(2), 1));
 		AdjacencyList adjL = new AdjacencyList(new Graph(nodes, edges));
 		System.out.println(adjL);
 	}

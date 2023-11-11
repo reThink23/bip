@@ -25,7 +25,7 @@ public record Edge (Node from, Node to, Double weight, boolean directed, String 
 	}
 
 	public String toString() {
-		return from+(hasWeight()? directed? " -["+weight+"]> " : " -["+weight+"]- " : directed? " -> " : " -- ")+to;
+		return from+(hasWeight()? directed? " --["+weight+"]-> " : " --["+weight+"]-- " : directed? " -> " : " -- ")+to;
 		// return "Edge("+from+(hasWeight()? directed? " -["+weight+"]> " : " -["+weight+"]- " : directed? " -> " : " -- ")+to+")";
 	}
 }

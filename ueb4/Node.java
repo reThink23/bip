@@ -32,7 +32,8 @@ public record Node (Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String 
 	}
 
 	public String toString() {
-		return "Node:"+id+ (hasName() ? "("+name+")" : ""); // + (hasEdgesIn() ? " Edges in: " + edgesIn : "") + (hasEdgesOut() ? "| Edges out: " + edgesOut : "");
+		return id.toString(); // + (hasEdgesIn() ? " Edges in: " + edgesIn : "") + (hasEdgesOut() ? "| Edges out: " + edgesOut : "");
+		// return "Node:"+id+ (hasName() ? "("+name+")" : ""); // + (hasEdgesIn() ? " Edges in: " + edgesIn : "") + (hasEdgesOut() ? "| Edges out: " + edgesOut : "");
 	}
 
 }
