@@ -1,18 +1,27 @@
 package ueb4;
 
 public record Edge (Node from, Node to, Double weight, boolean directed, String label) {
-	Edge(Node from, Node to, Number weight) {
+	public Edge(Node from, Node to, Double weight, boolean directed, String label) {
+		if (from == null || to == null) throw new IllegalArgumentException("from and to must not be null");
+		this.from = from;
+		this.to = to;
+		this.weight = weight;
+		this.directed = directed;
+		this.label = label;
+	}
+
+	public Edge(Node from, Node to, Number weight) {
 		this(from, to, weight.doubleValue(), true, null);
 		// from.edgesOut().add(this);
 		// to.edgesIn().add(this);
 	}
-	Edge(Node from, Node to) {
+	public Edge(Node from, Node to) {
 		this(from, to, null, true, null);
 	}
-	Edge(Node from, Node to, boolean directed) {
+	public Edge(Node from, Node to, boolean directed) {
 		this(from, to, null, directed, null);
 	}
-	Edge(Node from, Node to, Number weight, boolean directed) {
+	public Edge(Node from, Node to, Number weight, boolean directed) {
 		this(from, to, weight.doubleValue(), directed, null);
 	}
 

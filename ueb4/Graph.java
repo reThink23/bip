@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class Graph {
 
-	private enum NodeDirection{
+	public enum NodeDirection{
 		INCOMING, OUTGOING, BOTH
 	}
 
@@ -26,6 +26,10 @@ public class Graph {
 
 	public boolean hasEdge(Node from, Node to) {
 		return edges.stream().anyMatch(e -> e.from() == from && e.to() == to);
+	}
+
+	public boolean existsEdge(Node from, Node to) {
+		return edges.stream().filter(e -> {return e.from().equals(from) && e.to().equals(to);}).collect(Collectors.toList()).size() > 0;
 	}
 
 	public Node findNodeById(Integer id) {
@@ -102,7 +106,7 @@ public class Graph {
 		return rep.computeMST();
 	}
 
-	public boolean existsEdge(Node from, Node to) {
-		return edges.stream().filter(e -> {return e.from().equals(from) && e.to().equals(to);}).collect(Collectors.toList()).size() > 0;
+	public String toString() {
+		return "Nodes: " + nodes.toString() + "\nEdges: " + edges.toString();
 	}
 }

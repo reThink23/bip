@@ -31,6 +31,11 @@ public record Node (Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String 
 		return sameSetAttributes && id.equals(node.id) && name.equals(node.name) && edgesOut.equals(node.edgesOut) && edgesIn.equals(node.edgesIn);
 	}
 
+	public boolean equals(Node node, boolean onlyId) {
+		if (!onlyId) return equals(node);
+		else return id == node.id;
+	}
+
 	public String toString() {
 		return id.toString(); // + (hasEdgesIn() ? " Edges in: " + edgesIn : "") + (hasEdgesOut() ? "| Edges out: " + edgesOut : "");
 		// return "Node:"+id+ (hasName() ? "("+name+")" : ""); // + (hasEdgesIn() ? " Edges in: " + edgesIn : "") + (hasEdgesOut() ? "| Edges out: " + edgesOut : "");
