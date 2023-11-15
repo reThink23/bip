@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* For easier operations on Edges simplify usage */
-public class Edges {
+/* For easier operations on Edges, simplify usage */
+public class Edges extends ArrayList<Edge> {
 
 	public enum NodeDirection {
 		INCOMING, OUTGOING, BOTH
@@ -18,8 +18,8 @@ public class Edges {
 	Edges() { this.edges = new ArrayList<Edge>(); }
 
 	public void add(Node from, Node to, Double weight, boolean directed, String label) { edges.add(new Edge(from, to, weight, directed, label)); }
-	public void add(Edge edge) { edges.add(edge); }
-	public void remove(Edge edge) { edges.remove(edge); }
+	// public void add(Edge edge) { edges.add(edge); }
+	// public void remove(Edge edge) { edges.remove(edge); }
 	public List<Edge> toList() { return edges; }
 
 	public boolean hasEdge(Node from, Node to) {

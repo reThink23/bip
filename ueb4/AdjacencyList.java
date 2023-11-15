@@ -9,7 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AdjacencyList implements Representation {
-	/* for using identifier linkedHashMap */
+	/* 
+		Map with Node as key because it contains more info and there can be ids that can be skipped 
+		List of Edge could be also a Set but order could be practical in some cases
+	*/
 	Map<Node, List<Edge>> adjList;
 
 	AdjacencyList(Graph graph) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdjacencyMatrix implements Representation {
+	/* uses two lists of edge because edge contains more info */
 	Edge[][] matrix;
 	Edge startingEdge;
 
