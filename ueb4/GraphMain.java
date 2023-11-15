@@ -1,5 +1,8 @@
 package ueb4;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GraphMain {
     public static void main(String[] args) {
         Edges li = new Edges();
@@ -10,6 +13,16 @@ public class GraphMain {
         Node n3 = new Node(3);
         Node n4 = new Node(4);
         Node n5 = new Node(5);
+		
+		List<Node> nodes = new LinkedList<Node>();
+		nodes.add(n0);
+		nodes.add(n1);
+		nodes.add(n2);
+		nodes.add(n3);
+		nodes.add(n4);
+		nodes.add(n5);
+
+		boolean directed = true;
 
 		li.add(new Edge(n0,n1,4,directed));
 		li.add(new Edge(n0,n2,4,directed));
@@ -20,7 +33,7 @@ public class GraphMain {
 		li.add(new Edge(n3,n5,3,directed));
 		li.add(new Edge(n4,n5,3,directed));
 
-		g = new Graph(new List<Node>() {n0, n1, n2, n3, n4, n5, n6}, li);
+		Graph g = new Graph(nodes, li);
 
 	
 		System.out.println(g);
