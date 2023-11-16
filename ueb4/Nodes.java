@@ -15,7 +15,7 @@ public class Nodes {
 	Nodes(List<Node> list) { this.nodes = (list != null) ? list : new ArrayList<Node>(); }
 	Nodes() { this.nodes = new ArrayList<Node>(); }
 
-	public void add(Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String name) { nodes.add(new Node(id, edgesOut, edgesIn, name)); }
+	public void add(Integer id, Edges edgesOut, Edges edgesIn, String name) { nodes.add(new Node(id, edgesOut, edgesIn, name)); }
 	public void add(Node node) { nodes.add(node); }
 	public void remove(Node node) { nodes.remove(node); }
 	public List<Node> toList() { return nodes; }

@@ -1,12 +1,8 @@
 package ueb4;
 
-import java.util.List;
-// import java.util.UUID;
+// import java.util.List;
 
-public record Node (Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String name) {
-	// Node() {
-	// 	this(UUID.randomUUID().toString(), null, null, null)
-	// }
+public record Node (Integer id, Edges edgesOut, Edges edgesIn, String name) {
 
 	Node(Integer id) {
 		this(id, null, null, null);

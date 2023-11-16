@@ -13,9 +13,14 @@ public class Graph {
 	}
 
 	List<Node> nodes;
-	List<Edge> edges;
+	Edges edges;
 
 	Graph(List<Node> nodes, List<Edge> edges) {
+		this.nodes = nodes;
+		this.edges = new Edges(edges);
+	}
+
+	Graph(List<Node> nodes, Edges edges) {
 		this.nodes = nodes;
 		this.edges = edges;
 	}
@@ -64,7 +69,7 @@ public class Graph {
 	}
 
 
-	public Node addNode(Integer id, List<Edge> edgesOut, List<Edge> edgesIn, String name) {
+	public Node addNode(Integer id, Edges edgesOut, Edges edgesIn, String name) {
 		Node node = new Node(id, edgesOut, edgesIn, name);
 		nodes.add(node);
 		return node;
