@@ -34,6 +34,7 @@ public class GraphWithList extends AbstractGraph {
 		this.adjacencyList = adjacencyList;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void add(TreeSet[] adjacencyList, int start, int end, double weight) {
 		if(adjacencyList[start] == null) {
 			adjacencyList[start] = new TreeSet<ListEntry>();
