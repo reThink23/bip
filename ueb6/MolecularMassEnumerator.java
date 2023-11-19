@@ -26,25 +26,31 @@ public class MolecularMassEnumerator implements MolecularFormulaEnumerator {
 
 	public Set<Molecule> enumerateFromMass(int mass) {
 		this.multiple = 0;
-		List<Set<Molecule>> L = new ArrayList<Set<Molecule>>(mass+1);
-		L.set(0, new HashSet<Molecule>());
+		
+		@SuppressWarnings("unchecked")
+		Set<Molecule>[] L = (Set<Molecule>[]) new Set[mass+1];
+
+		for (int i = 0; i < mass+1; i++) L[i] = new HashSet<Molecule>();
+		Molecule startM = new Molecule(0);
+		L[0] = new HashSet<Molecule>();
+		L[0].add(startM);
 		for (int i = 0; i < mass-1; i++) {
-			for (Molecule molecule: L.get(i)) {
+			for (Molecule molecule: L[i]) {
 				for (Element e: allowed) {
 					if (i + e.mass() <= mass) {
 						Molecule m2 = molecule.addToCopy(e);
-						boolean alreadyContained = ! L.get(i + e.mass()).add(m2);
+						boolean alreadyContained = ! L[(i + e.mass())].add(m2);
 						if (alreadyContained) this.multiple++;
 					}
 				}
 			}
 		}
-		return L.get(mass);
+		return L[(mass)];
 	}
 
 	public static void main(String[] args) {
 		MolecularMassEnumerator mme = new MolecularMassEnumerator();
-		Set<Molecule> molecules = mme.enumerateFromMass(100);
+		Set<Molecule> molecules = mme.enumerateFromMass(80);
 
 		System.out.println(molecules.size());
 		molecules.stream().forEach(e -> System.out.println(e));

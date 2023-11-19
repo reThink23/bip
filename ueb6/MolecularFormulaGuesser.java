@@ -73,7 +73,14 @@ public interface MolecularFormulaGuesser {
 		}
 		
 		public String toString() {
+			boolean containsC = false;
+			if (multiplicities.containsKey(new Element("C", 14))) containsC = true;
 			StringBuilder sb = new StringBuilder();
+			if (containsC) {
+				Element c = multiplicities.keySet().stream().filter(e -> e.symbol == "C").findFirst().orElse(null);
+				sb.append("C"+multiplicities.get(c));
+				multiplicities.remove(c);
+			}
 			for(Element el: multiplicities.keySet()) {
 				sb.append(el.symbol()+multiplicities.get(el));
 			}
