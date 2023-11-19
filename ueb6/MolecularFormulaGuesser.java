@@ -1,6 +1,7 @@
 package ueb6;
 
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public interface MolecularFormulaGuesser {
 
@@ -73,16 +74,17 @@ public interface MolecularFormulaGuesser {
 		}
 		
 		public String toString() {
-			boolean containsC = false;
-			if (multiplicities.containsKey(new Element("C", 14))) containsC = true;
 			StringBuilder sb = new StringBuilder();
-			if (containsC) {
-				Element c = multiplicities.keySet().stream().filter(e -> e.symbol == "C").findFirst().orElse(null);
-				sb.append("C"+multiplicities.get(c));
-				multiplicities.remove(c);
+			TreeSet<Element> sorted = new TreeSet<Element>(multiplicities.keySet());
+			Element[] ch = sorted.stream().filter(e -> e.symbol == "C" || e.symbol == "H").toArray(Element[]::new);
+			if (ch.length > 1) {
+				sb.append(ch[0].symbol()+(multiplicities.get(ch[0]) != 1 ? multiplicities.get(ch[1]) : ""));
+				sorted.remove(ch[0]);
+				sb.append(ch[1].symbol()+(multiplicities.get(ch[1]) != 1 ? multiplicities.get(ch[1]) : ""));
+				sorted.remove(ch[1]);
 			}
-			for(Element el: multiplicities.keySet()) {
-				sb.append(el.symbol()+multiplicities.get(el));
+			for(Element el: sorted) {
+				sb.append(el.symbol()+(multiplicities.get(el) != 1 ? multiplicities.get(el) : ""));
 			}
 			return sb.toString();
 		}

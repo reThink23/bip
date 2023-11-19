@@ -1,4 +1,4 @@
-// package blatt3;
+package ueb3;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -210,15 +210,15 @@ public class BEDParser {
 		
 		
 		Map<String,String> seqs = null;
-		try{
-			seqs = IOAufgabe.parseGenome(args[1]);
-		}catch(FileNotFoundException ex) {
-			System.out.println("File + "+args[1]+" not found");
-			System.exit(1);
-		}catch(IOException ex) {
-			System.out.println("File + "+args[1]+" could not be read");
-			System.exit(1);
-		}
+		// try{
+		// 	seqs = IOAufgabe.parseGenome(args[1]);
+		// }catch(FileNotFoundException ex) {
+		// 	System.out.println("File + "+args[1]+" not found");
+		// 	System.exit(1);
+		// }catch(IOException ex) {
+		// 	System.out.println("File + "+args[1]+" could not be read");
+		// 	System.exit(1);
+		// }
 		
 		File out = new File(args[2]);
 		out.getParentFile().mkdirs();

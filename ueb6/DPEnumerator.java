@@ -1,11 +1,9 @@
 package ueb6;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class MolecularMassEnumerator implements MolecularFormulaEnumerator {
+public class DPEnumerator implements MolecularFormulaEnumerator {
 
 	private Element[] allowed = new Element[] { 
 		new Element("C", 12), 
@@ -16,12 +14,19 @@ public class MolecularMassEnumerator implements MolecularFormulaEnumerator {
 		new Element("S", 32), 
 	};
 
+	public DPEnumerator() {}
+
+
+	public DPEnumerator(Element[] allowed) {
+		this.allowed = allowed;
+	}
+
 	private int multiple = 0;
 
 	public int getMultiple() { return this.multiple; }
 
 	public Molecule guessFromMass(int mass) {
-		return null;
+		return enumerateFromMass(mass).stream().findFirst().get();
 	}
 
 	public Set<Molecule> enumerateFromMass(int mass) {
@@ -49,7 +54,7 @@ public class MolecularMassEnumerator implements MolecularFormulaEnumerator {
 	}
 
 	public static void main(String[] args) {
-		MolecularMassEnumerator mme = new MolecularMassEnumerator();
+		DPEnumerator mme = new DPEnumerator();
 		Set<Molecule> molecules = mme.enumerateFromMass(80);
 
 		System.out.println(molecules.size());
