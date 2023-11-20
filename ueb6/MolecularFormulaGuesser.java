@@ -74,6 +74,7 @@ public interface MolecularFormulaGuesser {
 		}
 		
 		public String toString() {
+			/* Adding Hill system */
 			StringBuilder sb = new StringBuilder();
 			TreeSet<Element> sorted = new TreeSet<Element>(multiplicities.keySet());
 			Element[] ch = sorted.stream().filter(e -> e.symbol == "C" || e.symbol == "H").toArray(Element[]::new);

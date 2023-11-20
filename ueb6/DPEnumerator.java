@@ -53,6 +53,10 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 		return L[(mass)];
 	}
 
+	public static Set<Molecule> filterFormulaByRegex(Set<Molecule> molecules, String regex) {
+		return molecules.stream().filter(m -> m.toString().matches(regex)).collect(java.util.stream.Collectors.toSet());
+	} 
+
 	public static void main(String[] args) {
 		DPEnumerator mme = new DPEnumerator();
 		Set<Molecule> molecules = mme.enumerateFromMass(80);
