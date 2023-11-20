@@ -1,5 +1,7 @@
 package ueb6;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 
 	public Set<Molecule> enumerateFromMass(int mass) {
 		this.multiple = 0;
+		ArrayList<Element> remainingElements = new ArrayList<>(Arrays.asList(allowed));
 		
 		@SuppressWarnings("unchecked")
 		Set<Molecule>[] L = (Set<Molecule>[]) new Set[mass+1];
@@ -50,7 +53,7 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 				}
 			}
 		}
-		return L[(mass)];
+		return L[mass];
 	}
 
 	public static Set<Molecule> filterFormulaByRegex(Set<Molecule> molecules, String regex) {

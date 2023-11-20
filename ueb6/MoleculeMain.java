@@ -48,8 +48,9 @@ public class MoleculeMain {
 		System.out.println("dp amount: "+ allDP.size());
 		System.out.println("dp duplications: "+ dp.getMultiple()); // 18: 9, 42: 246, 60: 1542, 80: 4213, 81: 4461, 180: 224576
 		
-		String regex = "^C\\d+H\\d+N\\d+O\\d+P\\d+S\\d+$";
+		// String regex = "^C\\d+H\\d+N\\d+O\\d+P\\d+S\\d+$";
 		// String regex = "^C\\dH\\d+O\\d$";
+		String regex = "^.*?C6H12.*?$";
 		Set<Molecule> filtered = DPEnumerator.filterFormulaByRegex(allDP, regex);
 		System.out.println(filtered);
 		boolean hasC6H12O6 = allDP.stream().anyMatch(m -> m.toString() == "C6H12O6");
