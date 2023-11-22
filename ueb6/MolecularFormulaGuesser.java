@@ -17,11 +17,21 @@ public interface MolecularFormulaGuesser {
 		private int totalMass;
 		private int sumOfMasses;
 		private TreeMap<Element,Integer> multiplicities;
+		private int highestElementMass;
+
+		public int getHighestElementMass() { return highestElementMass; }
 		
 		public Molecule(int totalMass) {
 			this.totalMass = totalMass;
 			this.multiplicities = new TreeMap<>();
 			this.sumOfMasses = 0;
+		}
+
+		public Molecule(int totalMass, int highestElementMass) {
+			this.totalMass = totalMass;
+			this.multiplicities = new TreeMap<>();
+			this.sumOfMasses = 0;
+			this.highestElementMass = highestElementMass;
 		}
 		
 		
@@ -57,7 +67,7 @@ public interface MolecularFormulaGuesser {
 			sumOfMasses += el.mass()*multiplicity;
 		}
 		
-		public void removeELement(Element el, int multiplicity) {
+		public void removeElement(Element el, int multiplicity) {
 			if(!multiplicities.containsKey(el)) {
 				throw new IllegalArgumentException("Element "+el+" not contained in molecule "+toString());
 			}
@@ -77,13 +87,13 @@ public interface MolecularFormulaGuesser {
 			/* Adding Hill system */
 			StringBuilder sb = new StringBuilder();
 			TreeSet<Element> sorted = new TreeSet<Element>(multiplicities.keySet());
-			Element[] ch = sorted.stream().filter(e -> e.symbol == "C" || e.symbol == "H").toArray(Element[]::new);
-			if (ch.length > 1) {
-				sb.append(ch[0].symbol()+(multiplicities.get(ch[0]) != 1 ? multiplicities.get(ch[1]) : ""));
-				sorted.remove(ch[0]);
-				sb.append(ch[1].symbol()+(multiplicities.get(ch[1]) != 1 ? multiplicities.get(ch[1]) : ""));
-				sorted.remove(ch[1]);
-			}
+			// Element[] ch = sorted.stream().filter(e -> e.symbol == "C" || e.symbol == "H").toArray(Element[]::new);
+			// if (ch.length > 1) {
+			// 	sb.append(ch[0].symbol()+(multiplicities.get(ch[0]) != 1 ? multiplicities.get(ch[1]) : ""));
+			// 	sorted.remove(ch[0]);
+			// 	sb.append(ch[1].symbol()+(multiplicities.get(ch[1]) != 1 ? multiplicities.get(ch[1]) : ""));
+			// 	sorted.remove(ch[1]);
+			// }
 			for(Element el: sorted) {
 				sb.append(el.symbol()+(multiplicities.get(el) != 1 ? multiplicities.get(el) : ""));
 			}
@@ -149,6 +159,8 @@ public interface MolecularFormulaGuesser {
 			}
 			return 0;
 		}
+
+		public void setHighestElementMass(int mass) { this.highestElementMass = mass; }
 
 		
 	}

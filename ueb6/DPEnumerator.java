@@ -1,5 +1,6 @@
 package ueb6;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 
 	public DPEnumerator(Element[] allowed) {
 		this.allowed = allowed;
+		Arrays.sort(this.allowed, (e1, e2) -> Integer.compare(e1.mass(), e2.mass()));
 	}
 
 	private int multiple = 0;
@@ -30,29 +32,45 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 	}
 
 	public Set<Molecule> enumerateFromMass(int mass) {
-		/* Optimization 1: check for each molecule m if the same molecule is contained in L[i+m(m)-m(eToAdd)] */
+		/* 	Optimisierungs-Strategie: Wir überspringen jedes Element, was kleiner als die höchste Elementmasse des Moleküls ist, 
+			da wir das im vorherigen Schritt dasselbe Molekül schon bearbeitet haben.
+		*/
 		
 		this.multiple = 0;
-		
+
 		@SuppressWarnings("unchecked")
 		HashSet<Molecule>[] L = new HashSet[mass+1];
 
 		for (int i = 0; i < mass+1; i++) L[i] = new HashSet<Molecule>();
-		Molecule startM = new Molecule(0);
-		// L[0] = new HashSet<Molecule>();
-		L[0].add(startM);
+		L[0].add(new Molecule(0, allowed[0].mass()));
 		for (int i = 0; i < mass-1; i++) {
 			for (Molecule molecule: L[i]) {
 				for (Element e: allowed) {
 					if (i + e.mass() <= mass) {
+						if (molecule.getHighestElementMass() > e.mass()) continue;
 						Molecule m2 = molecule.addToCopy(e);
+						m2.setHighestElementMass(e.mass());
 						boolean alreadyContained = ! L[(i + e.mass())].add(m2);
 						if (alreadyContained) this.multiple++;
 					}
 				}
 			}
 		}
+		Molecule onlyH = new Molecule(mass);
+		onlyH.add(new Element("H", 1), mass);
+		L[mass].add(onlyH);
 		return L[mass];
+	}
+
+	public static Molecule parseFromString(String formula) {
+		Molecule mol = new Molecule(0);
+		String[] elements = formula.split("(?=[A-Z])");
+		for (String element: elements) {
+			String symbol = element.replaceAll("[0-9]", "");
+			int multiplicity = Integer.parseInt(element.replaceAll("[A-Z]", ""));
+			mol.add(new Element(symbol, 0), multiplicity);
+		}
+		return mol;
 	}
 
 	public static Set<Molecule> filterFormulaByRegex(Set<Molecule> molecules, String regex) {
