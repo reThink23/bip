@@ -1,7 +1,5 @@
 package ueb6;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,15 +30,16 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 	}
 
 	public Set<Molecule> enumerateFromMass(int mass) {
+		/* Optimization 1: check for each molecule m if the same molecule is contained in L[i+m(m)-m(eToAdd)] */
+		
 		this.multiple = 0;
-		ArrayList<Element> remainingElements = new ArrayList<>(Arrays.asList(allowed));
 		
 		@SuppressWarnings("unchecked")
-		Set<Molecule>[] L = (Set<Molecule>[]) new Set[mass+1];
+		HashSet<Molecule>[] L = new HashSet[mass+1];
 
 		for (int i = 0; i < mass+1; i++) L[i] = new HashSet<Molecule>();
 		Molecule startM = new Molecule(0);
-		L[0] = new HashSet<Molecule>();
+		// L[0] = new HashSet<Molecule>();
 		L[0].add(startM);
 		for (int i = 0; i < mass-1; i++) {
 			for (Molecule molecule: L[i]) {
@@ -62,10 +61,10 @@ public class DPEnumerator implements MolecularFormulaEnumerator {
 
 	public static void main(String[] args) {
 		DPEnumerator mme = new DPEnumerator();
-		Set<Molecule> molecules = mme.enumerateFromMass(80);
+		Set<Molecule> molecules = mme.enumerateFromMass(180);
 
 		System.out.println(molecules.size());
-		molecules.stream().forEach(e -> System.out.println(e));
+		molecules.stream().forEach(m -> System.out.println(m.getSumOfMasses() + " " + m.toString()));
 		System.out.println(mme.getMultiple());
 	}
 	

@@ -23,7 +23,7 @@ public class MoleculeMain {
 		// Molecule mol = greedy.guessFromMass(mass);
 		// System.out.println(mol);
 		
-		RecursiveEnumerator recursive = new RecursiveEnumerator(allowed);
+		// RecursiveEnumerator recursive = new RecursiveEnumerator(allowed);
 		// Molecule mol = recursive.guessFromMass(mass);
 		// System.out.println(mol);
 
