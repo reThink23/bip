@@ -16,7 +16,12 @@ public class StructureMain {
 		DNAAlphabet dnaAlphabet = DNAAlphabet.getInstance();
 		List<Sequence> seqs = FastAParser.parseFastA(dnaAlphabet, "C:\\Users\\joela\\Downloads\\extracted.fa", new SimpleSequenceFactory());
 		Sequence seq = seqs.get(0);
-		SequenceRegion region = (SequenceRegion) new Exon(1, 10, Strand.PLUS).extract(seq);
+		Sequence subSequence = seq.getSubSequence(0, 100);
+		SequenceRegion exon1 = new Exon(20, 50, Strand.PLUS);
+		Sequence extracted = exon1.extract(subSequence);
+		System.out.println(subSequence);
+		System.out.println(exon1);
+		System.out.println(extracted);
 
 	}
 }

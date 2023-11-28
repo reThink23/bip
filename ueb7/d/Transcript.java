@@ -70,8 +70,13 @@ public class Transcript implements SequenceRegion {
 		return this.exons[idx];
 	}
 
+	@Override
 	public Sequence extract(Sequence sequence) {
-		return new CompositeSequence(Arrays.stream(exons).map(e -> e.extract(sequence)).toArray(Exon[]::new));
+		return new CompositeSequence(Arrays.copyOf(exons, exons.length, Sequence[].class));
+	}
+
+	public String toString() {
+		return "Transcript: " + Arrays.toString(exons);
 	}
 	
 	

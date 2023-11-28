@@ -2,29 +2,30 @@ package ueb7.c;
 
 import ueb7.a.Alphabet;
 import ueb7.b.Sequence;
-import ueb7.d.Exon;
 
 public class CompositeSequence implements Sequence {
-	private Exon[] exons;
+	private Sequence[] sequences;
+	private int length;
 
-	public CompositeSequence(Exon[] exons) {
-		this.exons = exons;
+	public CompositeSequence(Sequence[] sequences) {
+		this.sequences = sequences;
+		int length = 0;
+		for (Sequence seq : sequences) {
+			length += seq.getLength();
+		}
+		this.length = length;
 	}
 
 	public int getLength() {
-		int length = 0;
-		for (Exon exon : exons) {
-			length += ((Sequence) exon).getLength();
-		}
 		return length;
 	}
 
 	public char getSymbolAt(int idx) {
 		int offset = 0;
-		for (Exon exon : exons) {
-			int length = ((Sequence) exon).getLength();
+		for (Sequence seq : sequences) {
+			int length = ((Sequence) seq).getLength();
 			if (idx < offset + length) {
-				return ((Sequence) exon).getSymbolAt(idx - offset);
+				return ((Sequence) seq).getSymbolAt(idx - offset);
 			}
 			offset += length;
 		}
@@ -32,29 +33,32 @@ public class CompositeSequence implements Sequence {
 	}
 
 	public Alphabet getAlphabet() {
-		return ((Sequence) exons[0]).getAlphabet();
+		return sequences[0].getAlphabet();
 	}
 
 	public Sequence getSubSequence(int start, int end) {
-		if (start < 0 || end > getLength() || start > end) throw new IndexOutOfBoundsException();
-		Exon[] subExons = new Exon[exons.length];
+		if (start < 0 || end > this.length || start > end) throw new IndexOutOfBoundsException();
+		Sequence[] subSequences = new Sequence[sequences.length];
 		int offset = 0;
-		for (int i = 0; i < exons.length; i++) {
-			int length = ((Sequence) exons[i]).getLength();
+		for (int i = 0; i < sequences.length; i++) {
+			int length = sequences[i].getLength();
 			if (start < offset + length) {
-				subExons[i] = (Exon) ((Sequence) exons[i]).getSubSequence(start - offset, end - offset);
+				int subStart = start - offset;
+				int subEnd = end - offset;
+				if (subEnd > length) subEnd = length;
+				subSequences[i] = sequences[i].getSubSequence(subStart, subEnd);
 			}
 			offset += length;
 		}
-		return new CompositeSequence(subExons);
+		return new CompositeSequence(subSequences);
 	}
 
 	public int getCodeAt(int idx) {
 		int offset = 0;
-		for (Exon exon : exons) {
-			int length = ((Sequence) exon).getLength();
+		for (Sequence seq : sequences) {
+			int length = seq.getLength();
 			if (idx < offset + length) {
-				return ((Sequence) exon).getCodeAt(idx - offset);
+				return seq.getCodeAt(idx - offset);
 			}
 			offset += length;
 		}

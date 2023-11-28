@@ -44,8 +44,13 @@ public class Exon implements SequenceRegion {
 		return strand;
 	}
 
+	@Override
 	public Sequence extract(Sequence sequence) {
 		return sequence.getSubSequence(start, end);
+	}
+
+	public String toString() {
+		return "Exon: " + start + "-" + end + " " + strand;
 	}
 
 }
