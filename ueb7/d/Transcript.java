@@ -1,6 +1,7 @@
 package ueb7.d;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import ueb7.b.Sequence;
 import ueb7.c.CompositeSequence;
@@ -72,7 +73,7 @@ public class Transcript implements SequenceRegion {
 
 	@Override
 	public Sequence extract(Sequence sequence) {
-		return new CompositeSequence(Arrays.copyOf(exons, exons.length, Sequence[].class));
+		return new CompositeSequence(Stream.of(exons).map(exon -> exon.extract(sequence)).toArray(Sequence[]::new));
 	}
 
 	public String toString() {
